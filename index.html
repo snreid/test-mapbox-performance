@@ -1,0 +1,156 @@
+<html>
+	<head>
+		<script src='https://api.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.js'></script>
+		<link href='https://api.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.css' rel='stylesheet' />
+		<style>
+			p {
+			  font-size: 0.85em;
+			  margin: 10px;
+			  text-align: left;
+			}
+
+			/**
+			* Create a position for the map
+			* on the page */
+			#map {
+			  position: absolute;
+			  top: 0;
+			  bottom: 0;
+			  width: 100%;
+			}
+
+			/**
+			* Set rules for how the map overlays
+			* (information box and legend) will be displayed
+			* on the page. */
+			.map-overlay {
+			  position: absolute;
+			  bottom: 0;
+			  right: 0;
+			  background: rgba(255, 255, 255, 0.8);
+			  margin-right: 20px;
+			  font-family: Arial, sans-serif;
+			  overflow: auto;
+			  border-radius: 3px;
+			}
+
+			#features {
+			  top: 0;
+			  height: 200px;
+			  margin-top: 20px;
+			  width: 350px;
+			}
+
+			#legend {
+			  padding: 10px;
+			  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+			  line-height: 18px;
+			  height: 150px;
+			  margin-bottom: 40px;
+			  width: 150px;
+			}
+
+			.legend-key {
+			  display: inline-block;
+			  border-radius: 20%;
+			  width: 10px;
+			  height: 10px;
+			  margin-right: 5px;
+			}
+		</style>
+
+	</head>
+	<body>
+		<div id='map'></div>
+		<div class='map-overlay' id='features'><h2>US population density</h2><div id='pd'><p>Hover over a county!</p></div></div>
+
+		<div class='map-overlay' id='legend'></div>
+
+		<script type="text/javascript">
+      url = new URL(window.location.href)
+      console.log(url)
+      token = url.searchParams.get("token")
+			mapboxgl.accessToken = token
+
+			var map = new mapboxgl.Map({
+			  container: 'map',
+			  style: 'mapbox://styles/doximity/ciyar6iwq003b2smu6a6jr9vb'
+			});
+
+			map.on('load', function(){
+				map.addSource('county-data', {
+					type: 'vector',
+					url: 'mapbox://doximity.dohh22c4'
+				})
+				map.addLayer({
+					'id': 'county-data',
+					"type": "fill",
+		            "source": "county-data",
+		            "source-layer": "counties-6o73d1",
+		            "maxZoom": 9,
+		            "minZoom": 8,
+		            "layout": {},
+		            "paint": {
+		                "fill-color": [
+		                    "step",
+		                    ["get", "CENSUSAREA"],
+		                    "#10c942",
+		                    100,
+		                    "#10c942",
+		                    200,
+		                    "#1cbd48",
+		                    500,
+		                    "#31ad53",
+		                    1000,
+		                    "#379952",
+		                    2000,
+		                    "#366e46",
+		                    5000,
+		                    "#33593e",
+		                    10000,
+		                    "#233629"
+		                ],
+		                "fill-opacity": 0.6,
+		                "fill-outline-color": "#fff"
+		            }
+				})
+
+				var layers = ['0-100', '100-200', '200-500', '500-1000', '1000-2000', '2000-5000', '5000-10000', '10000+'];
+				var colors = ["#10c942","#10c942","#1cbd48","#31ad53","#379952","#366e46","#33593e","#233629"];
+
+				// Legend
+				for (i = 0; i < layers.length; i++) {
+				  var layer = layers[i];
+				  var color = colors[i];
+				  var item = document.createElement('div');
+				  var key = document.createElement('span');
+				  key.className = 'legend-key';
+				  key.style.backgroundColor = color;
+
+				  var value = document.createElement('span');
+				  value.innerHTML = layer;
+				  item.appendChild(key);
+				  item.appendChild(value);
+				  legend.appendChild(item);
+				}
+				// END Legend
+
+				map.on('mousemove', function(e) {
+					var counties = map.queryRenderedFeatures(e.point, {
+					  layers: ['county-data']
+					});
+
+					if (counties.length > 0) {
+						document.getElementById('pd').innerHTML = '<h3><strong>This county\'s name is ' + counties[0].properties.NAME + ', CENSUSAREA: ' + counties[0].properties.CENSUSAREA + '</strong></h3>'
+					} else {
+					    document.getElementById('pd').innerHTML = '<p>Hover over a county!</p>';
+					}
+				});
+
+				map.getCanvas().style.cursor = 'default';
+
+				map.fitBounds([[-133.2421875, 16.972741], [-47.63671875, 52.696361]]);
+			});
+		</script>
+	</body>
+</html>
