@@ -67,8 +67,7 @@
 		<div class='map-overlay' id='legend'></div>
 
 		<script type="text/javascript">
-      url = new URL(window.location.href)
-      token = url.searchParams.get("token")
+      token = getUrlParameter("token")
 			mapboxgl.accessToken = token
 
 			var map = new mapboxgl.Map({
@@ -150,6 +149,13 @@
 
 				map.fitBounds([[-133.2421875, 16.972741], [-47.63671875, 52.696361]]);
 			});
+
+      function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        var results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+      };
 		</script>
 	</body>
 </html>
