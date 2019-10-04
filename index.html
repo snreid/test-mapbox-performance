@@ -68,7 +68,6 @@
 
 		<script type="text/javascript">
       url = new URL(window.location.href)
-      console.log(url)
       token = url.searchParams.get("token")
 			mapboxgl.accessToken = token
 
@@ -80,13 +79,13 @@
 			map.on('load', function(){
 				map.addSource('county-data', {
 					type: 'vector',
-					url: 'mapbox://doximity.dohh22c4'
+					url: 'mapbox://doximity.cx7idst4'
 				})
 				map.addLayer({
 					'id': 'county-data',
 					"type": "fill",
 		            "source": "county-data",
-		            "source-layer": "counties-6o73d1",
+		            "source-layer": "counties",
 		            "maxZoom": 9,
 		            "minZoom": 8,
 		            "layout": {},
