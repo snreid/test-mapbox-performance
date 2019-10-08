@@ -78,15 +78,13 @@
 			map.on('load', function(){
 				map.addSource('county-data', {
 					type: 'vector',
-					url: 'mapbox://doximity.cx7idst4'
+					url: 'mapbox://doximity.ck1hzhd6e013w2oow39t33t5p-4snbf'
 				})
 				map.addLayer({
 					'id': 'county-data',
 					"type": "fill",
 		            "source": "county-data",
-		            "source-layer": "counties",
-		            "maxZoom": 9,
-		            "minZoom": 8,
+		            "source-layer": "counties-sreid-test-test",
 		            "layout": {},
 		            "paint": {
 		                "fill-color": [
