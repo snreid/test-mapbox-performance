@@ -62,7 +62,7 @@
 	</head>
 	<body>
 		<div id='map'></div>
-		<div class='map-overlay' id='features'><h2>US population density</h2><div id='pd'><p>Hover over a county!</p></div></div>
+		<div class='map-overlay' id='features'><h2>HM00 Time to Own demo</h2><div id='pd'><p>Hover over a county!</p></div></div>
 
 		<div class='map-overlay' id='legend'></div>
 
@@ -78,33 +78,31 @@
 			map.on('load', function(){
 				map.addSource('county-data', {
 					type: 'vector',
-					url: 'mapbox://doximity.ck1hzhd6e013w2oow39t33t5p-4snbf'
+					url: 'mapbox://doximity.ck1l44mx74v5q2npwny7u1qdf-4m8c8'
 				})
 				map.addLayer({
 					'id': 'county-data',
 					"type": "fill",
 		            "source": "county-data",
-		            "source-layer": "counties-sreid-test-test",
+		            "source-layer": "sreid-test-tileset-IV",
 		            "layout": {},
 		            "paint": {
 		                "fill-color": [
 		                    "step",
-		                    ["get", "CENSUSAREA"],
+		                    ["get", "HM00_TIME_TO_OWN_DIVISION"],
 		                    "#10c942",
-		                    100,
+		                    0,
 		                    "#10c942",
-		                    200,
+		                    0.02,
 		                    "#1cbd48",
-		                    500,
+		                    0.04,
 		                    "#31ad53",
-		                    1000,
+		                    0.06,
 		                    "#379952",
-		                    2000,
+		                    0.08,
 		                    "#366e46",
-		                    5000,
+		                    0.1,
 		                    "#33593e",
-		                    10000,
-		                    "#233629"
 		                ],
 		                "fill-opacity": 0.6,
 		                "fill-outline-color": "#fff"
@@ -137,7 +135,7 @@
 					});
 
 					if (counties.length > 0) {
-						document.getElementById('pd').innerHTML = '<h3><strong>This county\'s name is ' + counties[0].properties.NAME + ', CENSUSAREA: ' + counties[0].properties.CENSUSAREA + '</strong></h3>'
+						document.getElementById('pd').innerHTML = '<h3><strong>This county\'s name is ' + counties[0].properties.NAME + ', Time to own: ' + counties[0].properties.HM00_TIME_TO_OWN+ 'years </strong></h3>'
 					} else {
 					    document.getElementById('pd').innerHTML = '<p>Hover over a county!</p>';
 					}
