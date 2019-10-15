@@ -78,18 +78,18 @@
 			map.on('load', function(){
 				map.addSource('county-data', {
 					type: 'vector',
-					url: 'mapbox://doximity.ck1l44mx74v5q2npwny7u1qdf-4m8c8'
+					url: 'mapbox://doximity.ck1s71s0c0aj32uo2xpomh16v-2wsgz'
 				})
 				map.addLayer({
 					'id': 'county-data',
 					"type": "fill",
 		            "source": "county-data",
-		            "source-layer": "sreid-test-tileset-IV",
+		            "source-layer": "sreid-test-dataset-V",
 		            "layout": {},
 		            "paint": {
 		                "fill-color": [
 		                    "step",
-		                    ["get", "HM00_TIME_TO_OWN_DIVISION"],
+		                    ["get", "TIME_TO_OWN_DIVISION"],
 		                    "#10c942",
 		                    0,
 		                    "#10c942",
@@ -135,7 +135,7 @@
 					});
 
 					if (counties.length > 0) {
-						document.getElementById('pd').innerHTML = '<h3><strong>This county\'s name is ' + counties[0].properties.NAME + ', Time to own: ' + counties[0].properties.HM00_TIME_TO_OWN+ 'years </strong></h3>'
+						document.getElementById('pd').innerHTML = '<h3><strong>This county\'s name is ' + counties[0].properties.NAME + ', Time to own: ' + counties[0].properties.TIME_TO_OWN+ 'years </strong></h3>'
 					} else {
 					    document.getElementById('pd').innerHTML = '<p>Hover over a county!</p>';
 					}
