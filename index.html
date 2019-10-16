@@ -62,7 +62,7 @@
 	</head>
 	<body>
 		<div id='map'></div>
-		<div class='map-overlay' id='features'><h2>HM00 Time to Own demo</h2><div id='pd'><p>Hover over a county!</p></div></div>
+		<div class='map-overlay' id='features'><h2>AM00 Salary demo</h2><div id='pd'><p>Hover over a county!</p></div></div>
 
 		<div class='map-overlay' id='legend'></div>
 
@@ -89,20 +89,20 @@
 		            "paint": {
 		                "fill-color": [
 		                    "step",
-		                    ["get", "TIME_TO_OWN_DIVISION"],
-		                    "#10c942",
-		                    0,
-		                    "#10c942",
-		                    0.02,
-		                    "#1cbd48",
-		                    0.04,
-		                    "#31ad53",
-		                    0.06,
-		                    "#379952",
-		                    0.08,
-		                    "#366e46",
-		                    0.1,
+		                    ["get", "COMPENSATION_DIVISION"],
 		                    "#33593e",
+		                    0.5,
+		                    "#366e46",
+		                    0.55,
+		                    "#379952",
+		                    0.6,
+		                    "#31ad53",
+		                    0.65,
+		                    "#1cbd48",
+		                    0.7,
+		                    "#10c942",
+		                    0.75,
+		                    "#10c942",
 		                ],
 		                "fill-opacity": 0.6,
 		                "fill-outline-color": "#fff"
@@ -110,7 +110,7 @@
 				})
 
 				var layers = ['0-100', '100-200', '200-500', '500-1000', '1000-2000', '2000-5000', '5000-10000', '10000+'];
-				var colors = ["#10c942","#10c942","#1cbd48","#31ad53","#379952","#366e46","#33593e","#233629"];
+				var colors = ["#10c942","#10c942","#1cbd48","#31ad53","#379952","#366e46","#33593e","#233629"].reverse();
 
 				// Legend
 				for (i = 0; i < layers.length; i++) {
@@ -135,7 +135,7 @@
 					});
 
 					if (counties.length > 0) {
-						document.getElementById('pd').innerHTML = '<h3><strong>This county\'s name is ' + counties[0].properties.NAME + ', Time to own: ' + counties[0].properties.TIME_TO_OWN+ 'years </strong></h3>'
+            document.getElementById('pd').innerHTML = '<h3><strong>This county\'s name is ' + counties[0].properties.NAME + ', Salary: ' + counties[0].properties.COMPENSATION + '</strong></h3><br /> Division: '+ counties[0].properties.COMPENSATION_DIVISION +''
 					} else {
 					    document.getElementById('pd').innerHTML = '<p>Hover over a county!</p>';
 					}
