@@ -1,0 +1,159 @@
+
+<html>
+	<head>
+    <script src='https://code.jquery.com/jquery-3.4.1.min.js'></script>
+		<script src='https://api.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.js'></script>
+		<link href='https://api.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.css' rel='stylesheet' />
+    <link href="style.css" rel="stylesheet" />
+    <script src="fips-join-sreid-test-output-AM00.js"></script>
+    <script src="fips-join-sreid-test-output-CN00.js"></script>
+  </head>
+
+  <body>
+    <div id='map'>
+    </div>
+		<div class='map-overlay' id='features'>
+      <h2>JSON over map demo</h2>
+      <select id="specialty_id">
+        <option value="AM00">AM00</option>
+        <option value="CN00">CN00</option>
+      </select>
+      <select id="layer">
+        <option value="salary">salary</option>
+        <option value="home">home</option>
+        <option value="time-to-own">time-to-own</option>
+      </select>
+      <div id="pd"></div>
+    </div>
+
+
+  <script type="text/javascript">
+  $(document).ready(function(){
+      LAYERS = ["salary", "home", "time-to-own"]
+
+      token = getUrlParameter("token")
+			mapboxgl.accessToken = token
+
+			var map = new mapboxgl.Map({
+			  container: 'map',
+			  style: 'mapbox://styles/doximity/ciyar6iwq003b2smu6a6jr9vb'
+			});
+
+			map.on('load', function(){
+				map.addSource('county-data', {
+					type: 'vector',
+					url: 'mapbox://doximity.668tqu82'
+				})
+
+        map.addLayer(defaultLayer("salary", salaryColorExpression(), "visible"))
+        map.addLayer(defaultLayer("home", homeColorExpression()))
+        map.addLayer(defaultLayer("time-to-own", timeToOwnColorExpression()))
+
+				map.on('mousemove', function(e) {
+          specialty_id = $("#specialty_id").val()
+					var counties = map.queryRenderedFeatures(e.point, {
+            layers: [$("#layer").val()]
+					});
+
+          if (counties.length > 0) {
+            data = eval(specialty_id)[specialty_id]
+            county_props = counties[0].properties
+            county_data = $.grep(data, function(e){ return e.FIPS == county_props.FIPS; })[0]
+            county_info = "<h3>" + county_props.NAME + ", " + county_props.STATE + "</h3>";
+            salary_info = "<strong>" + county_data.COMPENSATION + "</strong> Est. compensation<br />";
+            home_info = "<strong>" + county_data.MEDIAN_HOME_PRICE + "</strong> Median home price<br />";
+            time_to_own_info = "<strong>" + county_data.TIME_TO_OWN + "</strong> Est. years to own a home<br />";
+            $("#pd").html(
+              "<p>" +
+              county_info + salary_info + home_info + time_to_own_info
+              + "</p>"
+            )
+          }
+
+        })
+      })
+
+      $("#layer").change( function(val){
+        LAYERS.forEach(function(layer){
+          if(layer == val.target.value){
+            map.setLayoutProperty(val.target.value, "visibility", "visible")
+          } else {
+            map.setLayoutProperty(layer, "visibility", "none")
+          }
+        })
+      })
+      map.getCanvas().style.cursor = 'default';
+
+      map.fitBounds([[-133.2421875, 16.972741], [-47.63671875, 52.696361]]);
+
+      function defaultLayer(name, colorExpression, visibility = "none") {
+        return {
+          "id": name,
+          "type": "fill",
+          "source": "county-data",
+          "source-layer": "counties-with-fips-3p4r33",
+          "layout": {
+            "visibility": visibility,
+          },
+          "paint": {
+              "fill-color": colorExpression,
+              "fill-opacity": 0.6,
+              "fill-outline-color": "#fff"
+          }
+        }
+      }
+
+      function salaryColorExpression() {
+        var expression = ["match", ["get", "FIPS"]];
+        AM00["AM00"].forEach(function(row){
+          var green = row["COMPENSATION_DIVISION"] * 255
+          var color = "rgba(" + 0 + ", " + green + ", " + 0 + ", 1)";
+          expression.push(row["FIPS"], color)
+        });
+
+        // Last value is the default, used where there is no data
+        expression.push("rgba(0,0,0,0)");
+
+        return expression;
+      }
+
+      function homeColorExpression() {
+        var expression = ["match", ["get", "FIPS"]];
+        AM00["AM00"].forEach(function(row){
+          var red = row["MEDIAN_HOME_DIVISION"] * 255
+          var color = "rgba(" + red + ", " + 0 + ", " + 0 + ", 1)";
+          expression.push(row["FIPS"], color)
+        });
+
+        // Last value is the default, used where there is no data
+        expression.push("rgba(0,0,0,0)");
+
+        return expression;
+      }
+
+      function timeToOwnColorExpression() {
+        var expression = ["match", ["get", "FIPS"]];
+        AM00["AM00"].forEach(function(row){
+          var blue = row["TIME_TO_OWN_DIVISION"] * 255
+          var color = "rgba(" + 0 + ", " + 0 + ", " + blue + ", 1)";
+          expression.push(row["FIPS"], color)
+        });
+
+        // Last value is the default, used where there is no data
+        expression.push("rgba(0,0,0,0)");
+
+        return expression;
+      }
+
+
+      // Get Mapbox secret token from the URL (IE compatible)
+      function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        var results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+      };
+  })
+  </script>
+  </body>
+</html>
