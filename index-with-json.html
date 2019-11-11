@@ -28,7 +28,6 @@
 
 
   <script type="text/javascript">
-  $(document).ready(function(){
       LAYERS = ["salary", "home", "time-to-own"]
 
       token = getUrlParameter("token")
@@ -42,7 +41,7 @@
 			map.on('load', function(){
 				map.addSource('county-data', {
 					type: 'vector',
-					url: 'mapbox://doximity.668tqu82'
+					url: 'mapbox://doximity.9wwo6hzi'
 				})
 
         map.addLayer(defaultLayer("salary", salaryColorExpression(), "visible"))
@@ -74,14 +73,22 @@
       })
 
       $("#layer").change( function(val){
+        map.setLayoutProperty(val.target.value, "visibility", "visible")
+
         LAYERS.forEach(function(layer){
-          if(layer == val.target.value){
-            map.setLayoutProperty(val.target.value, "visibility", "visible")
-          } else {
+          if(layer != val.target.value){
             map.setLayoutProperty(layer, "visibility", "none")
           }
         })
       })
+
+      $("#specialty_id").change(function(val) {
+        console.log("repainting layer with" + val.target.value);
+        map.setPaintProperty("salary", "fill-color", salaryColorExpression());
+        map.setPaintProperty("home", "fill-color", homeColorExpression());
+        map.setPaintProperty("time-to-own", "fill-color", timeToOwnColorExpression());
+      })
+
       map.getCanvas().style.cursor = 'default';
 
       map.fitBounds([[-133.2421875, 16.972741], [-47.63671875, 52.696361]]);
@@ -91,7 +98,7 @@
           "id": name,
           "type": "fill",
           "source": "county-data",
-          "source-layer": "counties-with-fips-3p4r33",
+          "source-layer": "counties-with-fips-as-id-3827rt",
           "layout": {
             "visibility": visibility,
           },
@@ -105,7 +112,9 @@
 
       function salaryColorExpression() {
         var expression = ["match", ["get", "FIPS"]];
-        AM00["AM00"].forEach(function(row){
+        specialty_id = $("#specialty_id").val()
+
+        eval(specialty_id)[specialty_id].forEach(function(row){
           var green = row["COMPENSATION_DIVISION"] * 255
           var color = "rgba(" + 0 + ", " + green + ", " + 0 + ", 1)";
           expression.push(row["FIPS"], color)
@@ -119,7 +128,9 @@
 
       function homeColorExpression() {
         var expression = ["match", ["get", "FIPS"]];
-        AM00["AM00"].forEach(function(row){
+        specialty_id = $("#specialty_id").val()
+
+        eval(specialty_id)[specialty_id].forEach(function(row){
           var red = row["MEDIAN_HOME_DIVISION"] * 255
           var color = "rgba(" + red + ", " + 0 + ", " + 0 + ", 1)";
           expression.push(row["FIPS"], color)
@@ -133,7 +144,9 @@
 
       function timeToOwnColorExpression() {
         var expression = ["match", ["get", "FIPS"]];
-        AM00["AM00"].forEach(function(row){
+        specialty_id = $("#specialty_id").val()
+
+        eval(specialty_id)[specialty_id].forEach(function(row){
           var blue = row["TIME_TO_OWN_DIVISION"] * 255
           var color = "rgba(" + 0 + ", " + 0 + ", " + blue + ", 1)";
           expression.push(row["FIPS"], color)
@@ -153,7 +166,6 @@
         var results = regex.exec(location.search);
         return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
       };
-  })
   </script>
   </body>
 </html>
